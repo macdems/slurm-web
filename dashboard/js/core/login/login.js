@@ -59,12 +59,8 @@ define([
           });
       };
 
-      // user knows best where to log in
-      // always try to log first in the current cluster
-      var p = window.clusters.indexOf(config.cluster);
-      var currFirst = window.clusters.slice(p,p+1).concat(window.clusters.slice(0,p),window.clusters.slice(p+1));
-      async.mapSeries(currFirst, loginOnCluster, function(err, result) {
-        var clusterId = currFirst.indexOf(config.cluster); //0
+      async.mapSeries(window.clusters, loginOnCluster, function(err, result) {
+        var clusterId = window.clusters.indexOf(config.cluster);
 
         if (err && !userUtils.getUser(config.cluster)) {
           errorUtils.setError(JSON.parse(result[clusterId].responseText).message);
@@ -77,7 +73,6 @@ define([
     }
 
     this.init = function() {
-      var context;
       var options = ajaxUtils.getAjaxOptions(false);
       options.type = 'POST';
 
@@ -109,12 +104,7 @@ define([
         loginAction(options);
       }
 
-      if(config.PWDTYPE) {
-        context = {
-          pwdtype: '('+config.PWDTYPE+')'
-        };
-      }
-      $('#main').append(template(context));
+      $('#main').append(template());
       $(document).trigger('pageLoaded');
 
       // hack for placeholder in IE

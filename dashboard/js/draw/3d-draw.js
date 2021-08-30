@@ -350,7 +350,7 @@ define([
       column = tab[1];
 
       if (row / column === 1) {
-        cpuDimensions = Math.min(width, height)/Math.max(column, row);
+        cpuDimensions = Math.min(width, height);
         cpuDepth = nodeWidth * config.CPUDEPTH;
       } else {
         cpuDimensions = Math.min(height / row, width / column);

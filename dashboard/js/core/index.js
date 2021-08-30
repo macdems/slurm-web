@@ -145,17 +145,9 @@ require([
   String.prototype.capitalizeFirstLetter = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
   }
-  //define loader
-  var $loader = $('#loader').hide();
-  //show loader when page is loading
-  $(document).ajaxStart(function(){
-    $loader.show();
-  }) //hide when stop loading
-  .ajaxStop(function(){
-    $loader.hide();
-  });
 
   $(document).on('loadPage', function(e, options) {
+
     e.stopPropagation();
     $(document).trigger('destroyNavbar');
 
@@ -252,27 +244,6 @@ require([
     if (page.hasOwnProperty('refresh')) {
       page.refresh();
     }
-
-    if (page.hasOwnProperty('stopRefresh') && config.REFRESHCHECKBOX) {
-      $("#refreshCheckbox").off("change"); // don't stack events
-      $("#refreshCheckbox").change(function() {
-        if (this.checked) {
-          page.refresh();
-        } else {
-          page.stopRefresh();
-        }
-        document.cookie = 'dashboardRefresh='+this.checked+'; max-age=31536000';
-      });
-      var cookieCheck = document.cookie.replace(/(?:(?:^|.*;\s*)dashboardRefresh\s*\=\s*([^;]*).*$)|^.*$/, "$1") !== "false";
-      $("#refreshCheckbox").prop('checked', cookieCheck);
-      if (!cookieCheck) {
-        page.stopRefresh();
-      }
-      $("#refreshCheckboxContainer").show();
-    } else {
-      $("#refreshCheckboxContainer").hide();
-    }
-
   });
 
   $(window).resize(function() {

@@ -89,7 +89,6 @@ define([
       if (self.tagsinputOptions.length > 0) {
         tagsinputUtils.filterJobs(jobs, self.tagsinputOptions, config, filteredJobs);
       } else {
-        $('#total-cpus').text('');
         filteredJobs(jobs, jobs);
       }
     }
@@ -163,23 +162,19 @@ define([
             maxLegendHeight = 0;
 
           if (Object.keys(jobs).length === 0) {
-            $('#main').append(template({hasJobs: false}));
+            $('#main').append(template());
             $(document).trigger('pageLoaded');
             return;
           }
 
           context = {
-            tagsinputOptions: self.tagsinputOptions.toString(),
-            hasJobs: Object.keys(jobs).length !== 0
+            tagsinputOptions: self.tagsinputOptions.toString()
           };
-          var demicanvas = ($('#main').innerWidth()-50-15*8)/4/2;
+
           plotParams = {
             series: {
               pie: {
-                show: true,
-                offset: {
-                  left: Math.floor(-1*Math.min(demicanvas-65, demicanvas/2))+1
-                }
+                show: true
               }
             }
           };
@@ -396,10 +391,6 @@ define([
         self.init();
       }, config.REFRESH);
     };
-
-    this.stopRefresh = function() {
-      clearInterval(this.interval);
-    }
 
     this.destroy = function(destroyInterval) {
       if (this.interval && destroyInterval) {

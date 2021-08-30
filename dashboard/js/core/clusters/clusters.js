@@ -22,12 +22,10 @@ define([
   'jquery',
   'async',
   'handlebars',
-  'text!/slurm-web-conf/clusters.config.json',
   'text!../../js/core/clusters/clusters.hbs',
   'ajax-utils',
   'error-utils'
-], function($, async, Handlebars, clustersConfig, template, ajaxUtils, errorUtils) {
-  window.clusters = JSON.parse(clustersConfig);
+], function($, async, Handlebars, template, ajaxUtils, errorUtils) {
   var clusters = window.clusters,
     index;
 
@@ -127,7 +125,7 @@ define([
 
         if (failingClusters.length) {
           for (index in failingClusters) {
-            errorUtils.setError('Cluster ' + failingClusters[index].name + ' seems to be unreachable or under maintenance.');
+            errorUtils.setError('Error while fetching cluster ' + failingClusters[index].name + ' : it seems to be unreachable');
           }
 
           $('#flash').addClass('display');

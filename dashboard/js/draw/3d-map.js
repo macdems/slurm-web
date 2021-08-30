@@ -75,38 +75,12 @@ define([
 
     for (index in racks) {
       if (racks.hasOwnProperty(index)) {
-        // For each row get the biggest posy
-        var indexMax = Object.keys(racks[index])
-            .map(function(k){return racks[index][k].posy})
-            .sort().reverse()[0];
-        // Find the biggest posy value among all rows
-        if (indexMax > number) {
-          number = indexMax;
-        }
-        // Use length in case when the biggest posy is zero
         if (Object.keys(racks[index]).length > number) {
           number = Object.keys(racks[index]).length;
         }
       }
     }
 
-    return number;
-  }
-  function findRangeMinRacksNumber(racks) {
-    var number = 10000000, index;
-
-    for (index in racks) {
-      if (racks.hasOwnProperty(index)) {
-        // For each row get the smallest posy
-        var indexMin = Object.keys(racks[index])
-            .map(function(k){return racks[index][k].posy})
-            .sort()[0];
-        // Find the biggest posy value among all rows
-        if (indexMin < number) {
-          number = indexMin;
-        }
-      }
-    }
     return number;
   }
 
@@ -176,7 +150,7 @@ define([
     return {};
   }
 
-  function getMapRangeX(posx, max, min, env) {
+  function getMapRangeX(posx, max, env) {
     var i, k, index, pos,
       racks = getRacksFromPosX(posx, env),
       rangeMap = [],
@@ -188,6 +162,8 @@ define([
       rangeMap.push(0);
     }
 
+    i = 0;
+
     for (index in racks) {
       if (racks.hasOwnProperty(index) && racks[index].hasOwnProperty('name')) {
         pos = racks.length;
@@ -196,21 +172,26 @@ define([
         }
 
         range.push({ name: racks[index].name, position: pos });
+        i++;
       }
     }
 
-    for (k = min; k <= max; k++) {
-      var positionedRange = null;
-      for (r in range) {
-        if (range[r].position === k) {
-          positionedRange = range[r];
-        }
+    range.sort(function(a, b) {
+      if (a.position < b.position) {
+        return -1;
       }
-      // If there's a rack, add it to the current position
-      if (positionedRange) {
-        rangeMap.push(positionedRange.name);
+      if (a.position > b.position) {
+        return 1;
       }
-      else {
+      return 0;
+    });
+
+    for (k = 0; k < range.length; k++) {
+      rangeMap.push(range[k].name);
+    }
+
+    if (i < max) {
+      for (; i < max; i++) {
         rangeMap.push(0);
       }
     }
@@ -228,9 +209,6 @@ define([
       var i, k,
         rangeNumber = findRangeNumber(racks),
         rangeMaxRacksNumber = findRangeMaxRacksNumber(racks),
-        rangeMinRacksNumber = findRangeMinRacksNumber(racks),
-        // Get the space width for rack zone
-        rangeDiff = rangeMaxRacksNumber - rangeMinRacksNumber + 1,
         hotRange = true,
         map = {
           data: [],
@@ -239,16 +217,16 @@ define([
           altitude: 0
         };
 
-      map.data = map.data.concat(getMapWallX(rangeDiff));
+      map.data = map.data.concat(getMapWallX(rangeMaxRacksNumber));
       for (i = 0; i < config.PATHSIZE * 2; i++) {
-        map.data = map.data.concat(getMapPathX(rangeDiff));
+        map.data = map.data.concat(getMapPathX(rangeMaxRacksNumber));
       }
 
       for (k = 0; k < rangeNumber; k++) {
-        map.data = map.data.concat(getMapRangeX(k, rangeMaxRacksNumber, rangeMinRacksNumber, racks));
+        map.data = map.data.concat(getMapRangeX(k, rangeMaxRacksNumber, racks));
         if (hotRange) {
           for (i = 0; i < config.PATHSIZE; i++) {
-            map.data = map.data.concat(getMapPathX(rangeDiff));
+            map.data = map.data.concat(getMapPathX(rangeMaxRacksNumber));
           }
           hotRange = false;
         } else {
@@ -257,15 +235,15 @@ define([
       }
 
       for (i = 0; i < config.PATHSIZE * 2; i++) {
-        map.data = map.data.concat(getMapPathX(rangeDiff));
+        map.data = map.data.concat(getMapPathX(rangeMaxRacksNumber));
       }
 
-      map.data = map.data.concat(getMapWallX(rangeDiff));
+      map.data = map.data.concat(getMapWallX(rangeMaxRacksNumber));
 
-      map.width = rangeDiff + 2 + config.PATHSIZE * 4;
+      map.width = rangeMaxRacksNumber + 2 + config.PATHSIZE * 4;
       map.height = map.data.length / map.width;
       map.altitude = findMapAltitude(racks);
-      map.rangeMaxRacksNumber = rangeDiff;
+      map.rangeMaxRacksNumber = rangeMaxRacksNumber;
       map.rangeNumber = rangeNumber;
 
       return map;

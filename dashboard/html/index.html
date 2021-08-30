@@ -12,16 +12,9 @@
     <link href="/javascript/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="/javascript/bootstrap/css/bootstrap-tagsinput.css" rel="stylesheet">
     <link href="css/dashboard.css" rel="stylesheet">
-    <style> html{display:none;} </style>
-    <script>
-      if (self == top) {
-        document.documentElement.style.display = 'block';
-      } else {
-        top.location = self.location;
-      }
-    </script>
   </head>
   <body>
+    <script src="/slurm-web-conf/clusters.config.js"></script>
     <script type="text/javascript" data-main="js/core/index" src="/javascript/requirejs/require.min.js"></script>
 
     <div class="container-fluid">
@@ -33,16 +26,11 @@
               <i class="glyphicon glyphicon-chevron-left"></i>
             </button>
           </p>
-          <span id="refreshCheckboxContainer">
-            <span>Auto refresh</span>
-            <input id="refreshCheckbox" type="checkbox" checked>
-          </span>
           <div id="flash" style="display: none;">
             <div class="alert alert-danger" role="alert"></div>
           </div>
         </div>
       </div>
     </div>
-    <div id="loader"></div>
   </body>
 </html>

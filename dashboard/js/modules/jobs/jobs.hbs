@@ -2,7 +2,6 @@
   <h1 class="page-header">
     Jobs
   </h1>
-  {{#if hasJobs}}
   <div class="row plots">
     <div id='alloc-cores' class='col-xs-6 col-sm-2 col-md-3 placeholder'>
       <div class='plot-sub-div'>
@@ -30,11 +29,7 @@
     </div>
   </div>
   <div class="row filter">
-    <div id="total-cpus"></div>
     <input id="filter" type="text" class="typeahead form-control" autocomplete="off" spellcheck="false" value="{{tagsinputOptions}}" />
   </div>
   <div id="table-jobs" class="row"></div>
-  {{else}}
-    <div>There is no job submission to display right now.</div>
-  {{/if}}
 </div>
